@@ -53,26 +53,40 @@ On top of that standard, the repo ships a reference toolchain:
 
 The point is not another hosted task app. The point is a small standard that both humans and agents can read, mutate, diff, and review in git.
 
+## Install Beta
+
+```bash
+npm install -g agenttasks@next
+```
+
+The general CLI runs on Node.
+
+`agenttasks tui` currently requires [Bun](https://bun.sh) in the beta release because the OpenTUI renderer is launched through Bun.
+
 ## Quick Start
 
 ```bash
-pnpm install
-pnpm build
-node packages/cli/dist/index.js init --name "My Project"
-node packages/cli/dist/index.js validate
-node packages/cli/dist/index.js tui
+agenttasks init --name "My Project"
+agenttasks validate
+agenttasks tui
 ```
 
 Useful follow-ups:
 
 ```bash
-node packages/cli/dist/index.js ready
-node packages/cli/dist/index.js plan
-node packages/cli/dist/index.js serve
-node packages/cli/dist/index.js mcp
+agenttasks ready
+agenttasks plan
+agenttasks serve
+agenttasks mcp
 ```
 
-The non-interactive CLI runs under Node. The TUI re-execs itself under Bun so the OpenTUI renderer can run without making the rest of the CLI Bun-only.
+If you are developing from source instead of installing from npm:
+
+```bash
+pnpm install
+pnpm build
+node packages/cli/dist/index.js init --name "My Project"
+```
 
 ## What Ships
 
@@ -182,6 +196,7 @@ V0 intentionally excludes:
 - [Execution model](./docs/EXECUTION_MODEL.md)
 - [Extensions](./docs/EXTENSIONS.md)
 - [Hooks](./docs/HOOKS.md)
+- [Releasing](./docs/RELEASING.md)
 
 ## Contributing
 

@@ -10,6 +10,7 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "release:smoke": "zsh scripts/smoke-release.sh",
     "clean": "turbo run clean"
   },
   "devDependencies": {

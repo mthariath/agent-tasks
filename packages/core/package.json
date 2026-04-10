@@ -1,20 +1,48 @@
 {
   "name": "@agenttasks/core",
   "version": "0.1.0",
-  "private": true,
+  "description": "Core parser, validator, planner, and mutation engine for agent-tasks.",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "keywords": [
+    "agent-tasks",
+    "tasks",
+    "planning",
+    "workflow",
+    "markdown"
+  ],
+  "homepage": "https://github.com/mthariath/agent-tasks",
+  "bugs": {
+    "url": "https://github.com/mthariath/agent-tasks/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mthariath/agent-tasks.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test test/**/*.test.mjs",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepack": "pnpm run clean && pnpm run build"
   }
 }

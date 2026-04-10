@@ -70,7 +70,10 @@ function printHelp(): void {
     "  --same-tree",
     "  --worktree",
     "  --force",
-    "  --port <port>"
+    "  --port <port>",
+    "",
+    "Notes:",
+    "  `agenttasks tui` requires Bun in the current beta release."
   ];
   console.log(lines.join("\n"));
 }
@@ -567,7 +570,12 @@ async function runTUICommand(rootDir: string): Promise<void> {
     });
 
     child.on("error", (error) => {
-      reject(new Error(`failed to launch Bun for the TUI: ${(error as Error).message}`));
+      const spawnError = error as NodeJS.ErrnoException;
+      if (spawnError.code === "ENOENT") {
+        reject(new Error("`agenttasks tui` requires Bun. Install Bun from https://bun.sh or use the non-TUI CLI commands from Node."));
+        return;
+      }
+      reject(new Error(`failed to launch Bun for the TUI: ${spawnError.message}`));
     });
     child.on("close", (code) => {
       if (code === 0) {

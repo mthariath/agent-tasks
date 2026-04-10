@@ -1,9 +1,15 @@
 {
   "name": "agenttasks",
   "version": "0.1.0",
+  "description": "Git-native task CLI and TUI for humans and coding agents.",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "bin": {
     "agenttasks": "./dist/index.js"
   },
@@ -13,11 +19,31 @@
       "default": "./dist/index.js"
     }
   },
+  "keywords": [
+    "agent-tasks",
+    "cli",
+    "tasks",
+    "workflow",
+    "agents"
+  ],
+  "homepage": "https://github.com/mthariath/agent-tasks",
+  "bugs": {
+    "url": "https://github.com/mthariath/agent-tasks/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mthariath/agent-tasks.git",
+    "directory": "packages/cli"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test test/**/*.test.mjs",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepack": "pnpm --dir ../.. --filter @agenttasks/core build && pnpm run clean && pnpm run build"
   },
   "dependencies": {
     "@agenttasks/core": "workspace:*",

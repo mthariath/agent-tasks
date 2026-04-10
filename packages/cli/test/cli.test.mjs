@@ -11,9 +11,12 @@ import { indexProject } from "@agenttasks/core";
 const cliEntry = new URL("../dist/index.js", import.meta.url);
 const execFile = promisify(execFileCb);
 
-function runCli(cwd, args) {
+function runCli(cwd, args, options = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [cliEntry.pathname, ...args], { cwd });
+    const child = spawn(process.execPath, [cliEntry.pathname, ...args], {
+      cwd,
+      env: { ...process.env, ...(options.env ?? {}) }
+    });
     let stdout = "";
     let stderr = "";
 
@@ -458,6 +461,19 @@ export default defineExtension({
   assert.match(result.stdout, /failed after_finish fail-finish T-0001 - finish follow-up failed/);
 
   await mcp.close();
+  await rm(root, { recursive: true, force: true });
+});
+
+test("tui reports a clear Bun requirement when Bun is unavailable", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "agenttasks-cli-"));
+
+  const result = await runCli(root, ["tui"], {
+    env: { PATH: path.dirname(process.execPath) }
+  });
+
+  assert.equal(result.code, 1);
+  assert.match(result.stderr, /requires Bun/);
+
   await rm(root, { recursive: true, force: true });
 });
 

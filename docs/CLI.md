@@ -2,6 +2,15 @@
 
 The reference executable is `agenttasks`.
 
+## Install
+
+```bash
+npm install -g agenttasks@next
+```
+
+- General CLI commands run on Node.
+- `agenttasks tui` currently requires [Bun](https://bun.sh) in the beta release.
+
 ## Commands
 
 ```bash
@@ -58,6 +67,7 @@ agenttasks tui
 - multiple `mcp` instances can run at the same time as long as each process targets its own project root.
 - multiple `serve` instances can run at the same time as long as each process targets its own project root or port.
 - `tui` launches a realtime OpenTUI interface with board, people, and planning views, ticket/epic detail, assignment flows, missing-project onboarding, and ticket creation via `n`.
+- if Bun is missing, `tui` fails with an explicit install message instead of a raw spawn error.
 - `assigned_to` is a freeform single assignee field for humans or agents.
 - projects may define extra ticket fields in `.agent-tasks/project.yaml`; CLI create/edit uses `--field` and `--clear-field` for them.
 - tickets and epics may carry `references`, which are plain repo-relative supporting-doc paths such as `docs/DESIGN.md` or `PLANS.md`.
