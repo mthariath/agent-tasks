@@ -6,6 +6,7 @@
   "packageManager": "pnpm@10.0.0",
   "scripts": {
     "generate:default-content": "node scripts/generate-default-content.mjs",
+    "dev:docs": "pnpm --filter agenttasks-docs dev -- --host 127.0.0.1 --port 4321",
     "build": "turbo run build",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",

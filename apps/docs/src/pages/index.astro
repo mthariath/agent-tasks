@@ -1,0 +1,492 @@
+---
+import "../styles/site.css";
+
+const extensionCode = `<span class="hl-kw">import</span> { <span class="hl-fn">defineExtension</span> } <span class="hl-kw">from</span> <span class="hl-str">"./api.js"</span>;
+
+<span class="hl-kw">export default</span> <span class="hl-fn">defineExtension</span>({
+  <span class="hl-key">id</span>: <span class="hl-str">"review-gate"</span>,
+  <span class="hl-fn">setup</span>(api) {
+    api.<span class="hl-fn">on</span>(<span class="hl-str">"before_finish"</span>, <span class="hl-kw">async</span> (ctx) =&gt; {
+      <span class="hl-kw">const</span> result = <span class="hl-kw">await</span> <span class="hl-fn">exec</span>(<span class="hl-str">"pnpm"</span>, [<span class="hl-str">"test"</span>]);
+      <span class="hl-kw">if</span> (result.exitCode !== <span class="hl-val">0</span>) {
+        <span class="hl-kw">return</span> ctx.<span class="hl-fn">block</span>(<span class="hl-str">"Tests failed"</span>, <span class="hl-str">"test_failure"</span>);
+      }
+      ctx.log.<span class="hl-fn">info</span>(<span class="hl-str">\`passed all checks\`</span>);
+    });
+  }
+});`;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>agent-tasks — tasks for agents</title>
+    <meta
+      name="description"
+      content="Git-native tickets with dependency graphs, a terminal board, and a planning engine. For coding agents and the humans coordinating them."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+    <meta property="og:title" content="agent-tasks" />
+    <meta property="og:description" content="Git-native tickets with dependency graphs, a terminal board, and a planning engine." />
+    <meta property="og:image" content="/mascot.png" />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <div class="shell">
+
+      <nav class="topbar">
+        <a class="brand" href="#top">
+          <img src="/mascot.svg" alt="" />
+          <span>agent-tasks</span>
+        </a>
+        <div class="navlinks">
+          <a href="#format">Format</a>
+          <a href="#board">Board</a>
+          <a href="#workflow">Workflow</a>
+          <a href="https://github.com/mthariath/agent-tasks">GitHub</a>
+        </div>
+      </nav>
+
+      <!-- Hero -->
+
+      <header class="hero" id="top">
+        <div>
+          <h1>Tasks for Agents.</h1>
+          <p>
+            Git-native tickets with dependency graphs, a terminal board, and a planning engine.
+            For coding agents and the humans coordinating them.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="https://github.com/mthariath/agent-tasks">View on GitHub</a>
+            <a class="button-secondary" href="#board">See the board</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="spark one"></div>
+          <div class="spark two"></div>
+          <div class="spark-fill one"></div>
+          <div class="spark-fill two"></div>
+          <img src="/mascot.svg" alt="" />
+        </div>
+      </header>
+
+      <!-- Quick Start -->
+
+      <section class="quickstart">
+        <div class="code-pane">
+          <pre><span class="hl-cmd">$ npx agent-tasks init --name "my-project"</span>
+<span class="hl-cmd">$ npx agent-tasks plan</span>
+<span class="hl-cmd">$ npx agent-tasks tui</span></pre>
+        </div>
+      </section>
+
+      <!-- The Format -->
+
+      <section class="section" id="format">
+        <div class="section-head">
+          <h2>The format</h2>
+          <p>Plain files under <code>.agent-tasks/</code>. YAML frontmatter for structure, Markdown body for context.</p>
+        </div>
+        <div class="format-panes">
+          <div class="code-pane">
+            <div class="code-pane-label">File tree</div>
+            <pre><span class="hl-val">.agent-tasks/</span>
+  project.yaml       <span class="hl-comment">← workflow config</span>
+  WORKFLOW.md         <span class="hl-comment">← status definitions</span>
+  epics/
+    E-0001.md
+  tickets/
+    T-0001.md
+    T-0042.md         <span class="hl-comment">← agent execution contract</span>
+  templates/
+    ticket.md
+  extensions/
+    api.ts            <span class="hl-comment">← hook type definitions</span>
+    review-gate.ts</pre>
+          </div>
+          <div class="code-pane">
+            <div class="code-pane-label">T-0042.md</div>
+            <pre><span class="hl-dim">---</span>
+<span class="hl-key">id:</span> <span class="hl-val">T-0042</span>
+<span class="hl-key">title:</span> <span class="hl-val">Add review queue</span>
+<span class="hl-key">epic:</span> <span class="hl-val">E-0001</span>
+<span class="hl-key">status:</span> <span class="hl-status-ready">ready</span>
+<span class="hl-key">priority:</span> <span class="hl-val">high</span>
+<span class="hl-key">depends_on:</span> <span class="hl-ref">[T-0038]</span>
+<span class="hl-key">assigned_to:</span> <span class="hl-val">codex/main</span>
+<span class="hl-key">references:</span>
+  - <span class="hl-ref">docs/EXECUTION_MODEL.md</span>
+<span class="hl-dim">---</span>
+
+<span class="hl-heading">## Context</span>
+
+Review handoff needs a repo-local queue
+once <span class="hl-val">finish</span> runs. The extension fires after
+status transitions to <span class="hl-status-review">in_review</span>.
+
+<span class="hl-heading">## Acceptance</span>
+
+- [ ] Queue persists in <span class="hl-val">.agent-tasks/</span>
+- [ ] <span class="hl-val">before_finish</span> hook blocks on failure
+- [ ] Board shows review items</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- The Board -->
+
+      <section class="section" id="board">
+        <div class="section-head">
+          <h2>The board</h2>
+          <p>A terminal UI over the same files. Status lanes, dependency counts, keyboard-driven.</p>
+        </div>
+        <div class="tui-board">
+          <div class="tui-topbar">
+            <div class="tui-tabs">
+              <span class="tui-tab active">1 Board</span>
+              <span class="tui-tab">2 People</span>
+              <span class="tui-tab">3 Plan</span>
+            </div>
+            <div class="tui-info">
+              <span>acme-api</span>
+              <span>14 visible</span>
+              <span class="tui-dot">&bull;</span>
+            </div>
+          </div>
+          <div class="tui-columns">
+
+            <!-- ready -->
+            <div class="tui-column">
+              <div class="tui-column-header" style="color: #56a8ff; background: #1f354f; border-bottom: 2px solid #56a8ff;">
+                <span>ready</span><span>3</span>
+              </div>
+              <div class="tui-column-body">
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0009 &middot; feature &middot; high</div>
+                  <div class="tui-ticket-title">Add validation middleware</div>
+                  <div class="tui-ticket-info">@codex/main &ensp;&darr;1</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0017 &middot; feature &middot; medium</div>
+                  <div class="tui-ticket-title">Implement rate limiting</div>
+                  <div class="tui-ticket-info">@pi/refiner &ensp;&darr;2</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0023 &middot; chore &middot; low</div>
+                  <div class="tui-ticket-title">Update CI matrix</div>
+                  <div class="tui-ticket-info">unassigned</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- in_progress -->
+            <div class="tui-column">
+              <div class="tui-column-header" style="color: #f0c25f; background: #413b2c; border-bottom: 2px solid #f0c25f;">
+                <span>in progress</span><span>3</span>
+              </div>
+              <div class="tui-column-body">
+                <div class="tui-ticket selected">
+                  <div class="tui-ticket-meta">T-0004 &middot; feature &middot; high</div>
+                  <div class="tui-ticket-title">Dependency graph resolver</div>
+                  <div class="tui-ticket-info">@codex/main &ensp;&darr;3 &uarr;1</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0011 &middot; bug &middot; high</div>
+                  <div class="tui-ticket-title">Fix cycle detection edge case</div>
+                  <div class="tui-ticket-info">@pi/refiner &ensp;&darr;1</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0019 &middot; feature &middot; medium</div>
+                  <div class="tui-ticket-title">Worktree cleanup on finish</div>
+                  <div class="tui-ticket-info">@codex/main &ensp;&darr;1</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- blocked -->
+            <div class="tui-column">
+              <div class="tui-column-header" style="color: #ff8478; background: #452d31; border-bottom: 2px solid #ff8478;">
+                <span>blocked</span><span>2</span>
+              </div>
+              <div class="tui-column-body">
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0012 &middot; feature &middot; high</div>
+                  <div class="tui-ticket-title">Review queue integration</div>
+                  <div class="tui-ticket-info">@codex/main &ensp;&darr;2 &uarr;3</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0025 &middot; feature &middot; medium</div>
+                  <div class="tui-ticket-title">MCP streaming responses</div>
+                  <div class="tui-ticket-info">@pi/refiner &ensp;&darr;1 &uarr;1</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- in_review -->
+            <div class="tui-column">
+              <div class="tui-column-header" style="color: #c392ff; background: #37314f; border-bottom: 2px solid #c392ff;">
+                <span>in review</span><span>2</span>
+              </div>
+              <div class="tui-column-body">
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0015 &middot; feature &middot; medium</div>
+                  <div class="tui-ticket-title">Extension lifecycle hooks</div>
+                  <div class="tui-ticket-info">@pi/refiner &ensp;&uarr;2</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0021 &middot; bug &middot; low</div>
+                  <div class="tui-ticket-title">Status transition validation</div>
+                  <div class="tui-ticket-info">@codex/main &ensp;&uarr;1</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- done -->
+            <div class="tui-column">
+              <div class="tui-column-header" style="color: #61d4a5; background: #223f3b; border-bottom: 2px solid #61d4a5;">
+                <span>done</span><span>4</span>
+              </div>
+              <div class="tui-column-body">
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0001 &middot; feature &middot; high</div>
+                  <div class="tui-ticket-title">Init command scaffold</div>
+                  <div class="tui-ticket-info">@codex/main</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0002 &middot; feature &middot; high</div>
+                  <div class="tui-ticket-title">YAML frontmatter parser</div>
+                  <div class="tui-ticket-info">@pi/refiner</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0003 &middot; chore &middot; medium</div>
+                  <div class="tui-ticket-title">Project config schema</div>
+                  <div class="tui-ticket-info">@codex/main</div>
+                </div>
+                <div class="tui-ticket">
+                  <div class="tui-ticket-meta">T-0005 &middot; feature &middot; medium</div>
+                  <div class="tui-ticket-title">CLI validate command</div>
+                  <div class="tui-ticket-info">@pi/refiner</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="tui-footer">
+            <div class="tui-keys">
+              <span><b>tab</b> focus</span>
+              <span><b>h/l</b> lane</span>
+              <span><b>j/k</b> card</span>
+              <span><b>/</b> search</span>
+              <span><b>n</b> new</span>
+              <span><b>?</b> help</span>
+            </div>
+            <div class="tui-counts">
+              <span style="color: #56a8ff;">3 rdy</span>
+              <span style="color: #f0c25f;">3 prg</span>
+              <span style="color: #ff8478;">2 blk</span>
+              <span style="color: #c392ff;">2 rev</span>
+              <span style="color: #61d4a5;">4 done</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- The Workflow -->
+
+      <section class="section" id="workflow">
+        <div class="section-head">
+          <h2>The workflow</h2>
+          <p>Four commands from scaffold to ship.</p>
+        </div>
+        <div class="workflow-steps">
+
+          <div class="workflow-step">
+            <div class="workflow-marker">
+              <div class="workflow-dot">1</div>
+              <div class="workflow-line"></div>
+            </div>
+            <div class="workflow-desc">
+              <h3>Init</h3>
+              <p>Scaffold the project directory and default config.</p>
+            </div>
+            <div class="code-pane workflow-term">
+              <pre><span class="hl-cmd">$ agenttasks init --name "acme-api"</span>
+
+  Created .agent-tasks/
+    project.yaml        workflow + field config
+    WORKFLOW.md          status definitions
+    epics/
+    tickets/
+    templates/ticket.md  default template
+    extensions/          hook scaffolds
+
+  <span class="hl-ok">&#10003; Initialized acme-api</span></pre>
+            </div>
+          </div>
+
+          <div class="workflow-step">
+            <div class="workflow-marker">
+              <div class="workflow-dot">2</div>
+              <div class="workflow-line"></div>
+            </div>
+            <div class="workflow-desc">
+              <h3>Plan</h3>
+              <p>Derive ready work, parallel waves, blockers, and the critical path from the dependency graph.</p>
+            </div>
+            <div class="code-pane workflow-term">
+              <pre><span class="hl-cmd">$ agenttasks plan</span>
+
+  <span class="hl-val">Ready Now</span>
+    T-0009  Add validation middleware
+    T-0017  Implement rate limiting
+    T-0023  Update CI matrix
+
+  <span class="hl-val">Waves</span>
+    1. T-0009 | T-0017 | T-0023
+       ready &rarr; T-0004, T-0011
+    2. T-0004 | T-0011 | T-0019
+       ready &rarr; T-0012, T-0015
+    3. T-0012 | T-0015
+       ready &rarr; T-0021, T-0025
+
+  <span class="hl-val">Biggest Blockers</span>
+    T-0009  blocks 3  unblocks T-0004, T-0012, T-0019
+    T-0004  blocks 2  unblocks T-0012, T-0025
+
+  <span class="hl-val">Critical Path</span>
+    T-0009 &rarr; T-0004 &rarr; T-0012 &rarr; T-0025</pre>
+            </div>
+          </div>
+
+          <div class="workflow-step">
+            <div class="workflow-marker">
+              <div class="workflow-dot">3</div>
+              <div class="workflow-line"></div>
+            </div>
+            <div class="workflow-desc">
+              <h3>Claim &amp; Start</h3>
+              <p>Assign a ticket, transition to in-progress, and create an isolated worktree.</p>
+            </div>
+            <div class="code-pane workflow-term">
+              <pre><span class="hl-cmd">$ agenttasks start T-0009 --as codex/main</span>
+
+  T-0009  Add validation middleware
+    status   <span class="hl-status-ready">ready</span> &rarr; <span class="hl-status-progress">in_progress</span>
+    assigned codex/main
+    worktree .worktrees/T-0009
+
+  <span class="hl-ok">&#10003; Started T-0009</span></pre>
+            </div>
+          </div>
+
+          <div class="workflow-step">
+            <div class="workflow-marker">
+              <div class="workflow-dot">4</div>
+              <div class="workflow-line"></div>
+            </div>
+            <div class="workflow-desc">
+              <h3>Finish</h3>
+              <p>Transition to review, clean up the worktree, and unblock dependents.</p>
+            </div>
+            <div class="code-pane workflow-term">
+              <pre><span class="hl-cmd">$ agenttasks finish T-0009</span>
+
+  T-0009  Add validation middleware
+    status   <span class="hl-status-progress">in_progress</span> &rarr; <span class="hl-status-review">in_review</span>
+    worktree removed
+
+  <span class="hl-val">Newly ready</span>
+    T-0004  Dependency graph resolver
+    T-0019  Worktree cleanup on finish
+
+  <span class="hl-ok">&#10003; Finished T-0009</span></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Extensions & Agents -->
+
+      <section class="section" id="extensions">
+        <div class="section-head">
+          <h2>Extend it</h2>
+          <p>Project-local TypeScript hooks and an MCP adapter for agent integration.</p>
+        </div>
+        <div class="ext-split">
+          <div class="code-pane">
+            <div class="code-pane-label">extensions/review-gate.ts</div>
+            <pre set:html={extensionCode} />
+          </div>
+          <div class="mcp-card">
+            <h3>MCP Tools</h3>
+            <div class="mcp-grid">
+              <div>
+                <div class="mcp-tool-name">project_summary</div>
+                <div class="mcp-tool-desc">Full project state overview</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">ready_tickets</div>
+                <div class="mcp-tool-desc">What can start now</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">parallel_plan</div>
+                <div class="mcp-tool-desc">Wave execution plan</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">critical_path</div>
+                <div class="mcp-tool-desc">Longest dependency chain</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">create_ticket</div>
+                <div class="mcp-tool-desc">Add a new ticket</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">start_ticket</div>
+                <div class="mcp-tool-desc">Claim and begin work</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">finish_ticket</div>
+                <div class="mcp-tool-desc">Complete and transition</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">block_ticket</div>
+                <div class="mcp-tool-desc">Mark as blocked</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">dependency_analysis</div>
+                <div class="mcp-tool-desc">Full graph analysis</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">list_tickets</div>
+                <div class="mcp-tool-desc">Query with filters</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">active_workspaces</div>
+                <div class="mcp-tool-desc">Running worktrees</div>
+              </div>
+              <div>
+                <div class="mcp-tool-name">set_status</div>
+                <div class="mcp-tool-desc">Change ticket status</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+
+      <footer class="footer">
+        <a class="brand" href="#top">
+          <img src="/mascot.svg" alt="" />
+          <span>agent-tasks</span>
+        </a>
+        <a href="https://github.com/mthariath/agent-tasks">GitHub</a>
+      </footer>
+
+    </div>
+  </body>
+</html>

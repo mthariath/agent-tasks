@@ -5,6 +5,7 @@ dist
 coverage
 *.log
 .codex
+.astro
 
 # agenttasks:managed:start
 # agent-tasks runtime
