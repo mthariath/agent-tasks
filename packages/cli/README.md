@@ -1,11 +1,11 @@
-# agenttasks
+# @agenttasks/cli
 
 `agenttasks` is the reference CLI and TUI for the `agent-tasks` file format.
 
 ## Install
 
 ```bash
-npm install -g agenttasks@next
+npm install -g @agenttasks/cli@next
 ```
 
 The general CLI runs on Node.

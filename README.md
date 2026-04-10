@@ -56,7 +56,7 @@ The point is not another hosted task app. The point is a small standard that bot
 ## Install Beta
 
 ```bash
-npm install -g agenttasks@next
+npm install -g @agenttasks/cli@next
 ```
 
 The general CLI runs on Node.
@@ -141,7 +141,7 @@ That is enough for the toolchain to understand the work item, validate it, place
 - `apps/docs/` Astro landing page
 - `spec/` standard docs
 - `packages/core/` parser, validator, indexer, planning engine, and mutation layer
-- `packages/cli/` the `agenttasks` executable, TUI, MCP adapter, and coordinator
+- `packages/cli/` the `@agenttasks/cli` package, `agenttasks` executable, TUI, MCP adapter, and coordinator
 - `skills/` opinionated workflow guidance for agents
 - `templates/` project templates and managed guidance blocks
 - `examples/` example `.agent-tasks/` projects

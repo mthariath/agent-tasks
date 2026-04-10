@@ -17,7 +17,7 @@ cd packages/core
 pnpm publish --tag next --access public
 
 cd ../cli
-pnpm publish --tag next
+pnpm publish --tag next --access public
 ```
 
 ## Install Check
@@ -25,7 +25,7 @@ pnpm publish --tag next
 After publishing, verify from a clean temp directory:
 
 ```bash
-npm install -g agenttasks@next
+npm install -g @agenttasks/cli@next
 agenttasks --help
 agenttasks init --name "Smoke"
 agenttasks validate

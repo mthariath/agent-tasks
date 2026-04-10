@@ -16,7 +16,7 @@ echo "Packing release tarballs"
 (cd "$ROOT_DIR/packages/cli" && pnpm pack --pack-destination "$TMP_DIR" >/dev/null)
 
 core_tgz=("$TMP_DIR"/agenttasks-core-*.tgz)
-cli_tgz=("$TMP_DIR"/agenttasks-[0-9]*.tgz)
+cli_tgz=("$TMP_DIR"/agenttasks-cli-*.tgz)
 
 if [[ ${#core_tgz[@]} -ne 1 || ${#cli_tgz[@]} -ne 1 ]]; then
   echo "expected exactly one packed tarball for core and cli"
@@ -40,7 +40,7 @@ echo "Installing packed tarballs"
   npm_config_cache="$TMP_DIR/.npm-cache" npm install "$core_tgz[1]" "$cli_tgz[1]" >/dev/null
 )
 
-CLI_ENTRY="$INSTALL_DIR/node_modules/agenttasks/dist/index.js"
+CLI_ENTRY="$INSTALL_DIR/node_modules/@agenttasks/cli/dist/index.js"
 SMOKE_ROOT="$INSTALL_DIR/workspace"
 mkdir -p "$SMOKE_ROOT"
 

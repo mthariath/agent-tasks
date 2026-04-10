@@ -5,7 +5,7 @@ The reference executable is `agenttasks`.
 ## Install
 
 ```bash
-npm install -g agenttasks@next
+npm install -g @agenttasks/cli@next
 ```
 
 - General CLI commands run on Node.

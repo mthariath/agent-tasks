@@ -1,5 +1,5 @@
 {
-  "name": "agenttasks",
+  "name": "@agenttasks/cli",
   "version": "0.1.0",
   "description": "Git-native task CLI and TUI for humans and coding agents.",
   "license": "MIT",
