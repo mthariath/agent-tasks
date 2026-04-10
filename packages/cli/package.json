@@ -1,0 +1,35 @@
+{
+  "name": "agenttasks",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "agenttasks": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/**/*.test.mjs",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agenttasks/core": "workspace:*",
+    "@opentui/core": "^0.1.97",
+    "@opentui/react": "^0.1.97",
+    "chokidar": "^4.0.3",
+    "jiti": "^2.6.1",
+    "react": "^19.2.0",
+    "react-devtools-core": "^7.0.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2"
+  }
+}

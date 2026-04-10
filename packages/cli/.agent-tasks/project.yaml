@@ -1,0 +1,32 @@
+version: 1
+name: CLI Test
+workflow:
+  name: default
+  statuses:
+    - backlog
+    - ready
+    - in_progress
+    - blocked
+    - in_review
+    - done
+  transitions:
+    backlog:
+      - ready
+      - blocked
+    ready:
+      - in_progress
+      - blocked
+    in_progress:
+      - in_review
+      - blocked
+      - ready
+    blocked:
+      - ready
+      - in_progress
+    in_review:
+      - done
+      - in_progress
+    done: []
+id_prefixes:
+  ticket: T
+  epic: E

@@ -1,0 +1,10 @@
+import { defineExtension } from "../api";
+
+export default defineExtension({
+  id: "review-queue",
+  setup(api) {
+    api.on("review_requested", async ({ payload, log }) => {
+      log.info(`enqueue ${String(payload.ticketId)} for review in ${String(payload.reviewStatus)}`);
+    });
+  }
+});

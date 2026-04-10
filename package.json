@@ -1,0 +1,19 @@
+{
+  "name": "agent-tasks",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Git-native task standard and reference tooling for humans and agents.",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "generate:default-content": "node scripts/generate-default-content.mjs",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.2",
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.3"
+  }
+}

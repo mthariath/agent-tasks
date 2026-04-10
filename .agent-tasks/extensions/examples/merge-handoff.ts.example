@@ -1,0 +1,14 @@
+import { defineExtension } from "../api";
+
+export default defineExtension({
+  id: "merge-handoff",
+  setup(api) {
+    api.registerCommand("prepare-merge-handoff", async ({ input, log }) => {
+      log.info(`prepare merge handoff for ${String(input.ticketId ?? "unknown-ticket")}`);
+      return {
+        ok: true,
+        note: "fill in your merge or PR handoff behavior here"
+      };
+    }, "Prepare a merge handoff payload for a finished ticket.");
+  }
+});

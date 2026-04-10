@@ -1,0 +1,14 @@
+import { defineExtension } from "../api";
+
+export default defineExtension({
+  id: "stale-worker-escalation",
+  setup(api) {
+    api.registerCommand("escalate-stale-worker", async ({ input, log }) => {
+      log.warn(`stale worker escalation requested for ${String(input.ticketId ?? "unknown-ticket")}`);
+      return {
+        ok: true,
+        escalated: true
+      };
+    }, "Escalate a stale worker or abandoned ticket for manual attention.");
+  }
+});

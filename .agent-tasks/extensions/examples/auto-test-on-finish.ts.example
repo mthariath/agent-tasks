@@ -1,0 +1,15 @@
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { defineExtension } from "../api";
+
+const exec = promisify(execFile);
+
+export default defineExtension({
+  id: "auto-test-on-finish",
+  setup(api) {
+    api.on("after_finish", async ({ rootDir, payload, log }) => {
+      log.info(`running test suite for ${String(payload.ticketId)}`);
+      await exec("pnpm", ["test"], { cwd: rootDir });
+    });
+  }
+});

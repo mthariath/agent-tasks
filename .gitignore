@@ -1,0 +1,12 @@
+node_modules
+dist
+.turbo
+.DS_Store
+coverage
+*.log
+.codex
+
+# agenttasks:managed:start
+# agent-tasks runtime
+.agent-tasks/.runtime/
+# agenttasks:managed:end
